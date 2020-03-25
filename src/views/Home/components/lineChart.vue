@@ -12,22 +12,31 @@ export default {
         },
         Height: {
             type: String,
-            default: '546px'
+            default: '542px'
+        },
+        item:{
+            type: Array,
+            default: []
         }
     },
     data() {
         return {
             chart: null,
-            items:[10, 52, 200, 334, 390, 330, 220],
-            data:["肝硬化","糖尿病","风湿性关节炎","高血压","高血脂","肾功能衰竭","贫血"],
-            list: [45,67,24,79,293,94,493]
+            items:[],
+            cost:[],
+            data:[],
+            list: []
         }
     },
-    mounted() {
-        this.$nextTick(() => {
-            this.initChart()
-
-        })
+    watch: {
+        item(val){
+            this.cost = val.map(item => item.medicationCosts);
+            this.data = val.map(item => item.chronicDiseaseMC);
+            this.list = val.map(item => item.chronicDiseaseQuantity);
+            this.$nextTick(() => {
+                this.initChart();
+            })
+        }
     },
     methods: {
         // 图表初始化数据
@@ -65,7 +74,7 @@ export default {
                     type: 'value'
                 },
                 {
-                    name: '患病人数',
+                    name: '患病人数(人)',
                     nameLocation: 'start',
                     type: 'value',
                     inverse: true
@@ -83,7 +92,7 @@ export default {
                     markArea: {
                         silent: true
                     },
-                    data: this.items
+                    data: this.cost
                 },
                 {
                     name: '患病人数',
